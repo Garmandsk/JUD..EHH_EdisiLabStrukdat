@@ -1,33 +1,15 @@
-#include <iostream>
-#include <unordered_map>
-#include <string>
-#include "hashtable.cpp"
-using namespace std;
-
-void cariProduk(const unordered_map<int, Produk>& produk, int idProduk) {
-    auto it = produk.find(idProduk);
-    if (it != produk.end()) {
-        cout << "I=================================================I" << endl;
+// Fungsi untuk mencari produk berdasarkan ID
+void cariProduk(int idProduk) {
+    auto it = hashProduk.find(idProduk);
+    if (it != hashProduk.end()) {
+        cout << "I=================================================I\n";
         cout << "                PRODUK DITEMUKAN!\n";
-        cout << "I=================================================I" << endl;
+        cout << "I=================================================I\n";
         cout << " Nama               : " << it->second.nama << endl;
         cout << " Kategori           : " << it->second.kategori << endl;
-        cout << " Harga              : Rp" << it->second.harga << endl;
-        cout << "I=================================================I";
+        cout << " Harga              : Rp " << fixed << setprecision(2) << it->second.harga << endl;
+        cout << "I=================================================I\n";
     } else {
         cout << "Produk dengan ID tersebut tidak ditemukan.\n";
     }
-}
-
-int main() {
-    system("cls");
-    unordered_map<int, Produk> produk = buatProduk();
-
-    int idProduk;
-    cout << "Masukkan ID Produk yang ingin dicari: ";
-    cin >> idProduk;
-
-    cariProduk(produk, idProduk);
-
-    return 0;
 }
