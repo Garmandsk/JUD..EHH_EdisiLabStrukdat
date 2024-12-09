@@ -21,6 +21,7 @@ struct Pembayaran {
     int idTransaksi;
     vector<Produk> keranjang;
     double totalHarga;
+    double biayaPengiriman;
 };
 
 /* Daftar Produk */
@@ -69,7 +70,7 @@ void urutkanProduk() {
     cout << "3. Berdasarkan harga (termahal ke termurah)\n";
     cout << "Masukkan pilihan (1-3): ";
     cin >> pilihan;
-
+ 
     if (pilihan == 1) {
         sort(daftarProduk.begin(), daftarProduk.end(), [](const Produk &a, const Produk &b) {
             return a.kategori == b.kategori ? a.nama < b.nama : a.kategori < b.kategori;
@@ -256,7 +257,20 @@ void lihatKeranjang() {
     } while (pilihan != "k" && pilihan != "K");
 }
 
-/* Function No. 3 */
+// Membuat graf dengan aturan rute
+unordered_map<string, vector<pair<string, double>>> buatGraf() {
+    unordered_map<string, vector<pair<string, double>>> graf = {
+        {"Indonesia", {{"Australia", 4}, {"Kanada", 4}, {"Kamboja", 5}, {"Malaysia", 7}}},
+        {"Malaysia", {{"Jepang", 5}}},
+        {"Meksiko", {{"Brazil", 7}}},
+        {"Arab Saudi", {{"Mesir", 3}, {"Brazil", 8}, {"Meksiko", 9}}},
+        {"Kanada", {{"Meksiko", 2}, {"Jepang", 4},  {"Arab Saudi", 11}}}, 
+        {"Kamboja", {{"Arab Saudi", 10}}},
+        {"Mesir", {{"Brazil", 4}}}
+    };
+    return graf;
+}
+
 void lakukanPembayaran() {
     if (keranjang.empty()) {
         cout << "Keranjang kosong! Tidak ada yang bisa dibayar.\n";
@@ -268,74 +282,110 @@ void lakukanPembayaran() {
         totalHarga += produk.harga;
     }
 
+    auto graf = buatGraf();
     int pilihan;
     cout << "Daftar Lokasi Pengiriman Yang Bisa Diantar Dari Indonesia:\n";
     cout << "1. Malaysia\n";
     cout << "2. Australia\n";
     cout << "3. Jepang\n";
-    cout << "4. Yunani\n";
-    cout << "5. Korea Utara\n\n";
-    cout << "Masukkan nomor tujuan pengantaran Anda (1-5): ";
+    cout << "4. Meksiko\n";
+    cout << "5. Arab Saudi\n";
+    cout << "6. Kanada\n";
+    cout << "7. Brazil\n";
+    cout << "8. Kamboja\n";
+    cout << "9. Mesir\n";
+    cout << "Masukkan nomor tujuan pengantaran Anda (1-9): ";
     cin >> pilihan;
 
     unordered_map<int, string> tujuanMap = {
         {1, "Malaysia"},
         {2, "Australia"},
         {3, "Jepang"},
-        {4, "Yunani"},
-        {5, "Korea Utara"}
+        {4, "Meksiko"},
+        {5, "Arab Saudi"},
+        {6, "Kanada"},
+        {7, "Brazil"},
+        {8, "Kamboja"},
+        {9, "Mesir"}
     };
 
     if (tujuanMap.find(pilihan) == tujuanMap.end()) {
-        cout << "\nNomor tujuan tidak valid! Silakan pilih nomor antara 1 dan 5.\n";
+        cout << "\nNomor tujuan tidak valid! Silakan pilih nomor antara 1 dan 9.\n";
         return;
     }
 
     string lokasiTujuan = tujuanMap[pilihan];
-
-    // Graf statis untuk rute pengiriman dan jarak (dalam km)
-    unordered_map<string, vector<pair<string, double>>> graf = {
-        {"Indonesia", {{"Malaysia", 500}, 
-                       {"Australia", 2750}, 
-                       {"Jepang", 5800},
-                       {"Yunani", 10400},     
-                       {"Korea Utara", 5300}}},
-    };
-
     string lokasiAsal = "Indonesia";
-    double jarak = numeric_limits<double>::max();
 
-    /* Cek Lokasi Asal Ke Tujuan */
-    if (graf.find(lokasiAsal) != graf.end()) {
-        for (const auto &tujuanInfo : graf[lokasiAsal]) {
-            if (tujuanInfo.first == lokasiTujuan) {
-                jarak = tujuanInfo.second;
-                break;
+    cout << "\nMenghitung rute terbaik...\n";
+
+    queue<pair<string, double>> q; 
+    unordered_map<string, bool> visited; 
+    unordered_map<string, string> parent; 
+
+    q.push({lokasiAsal, 0});
+    visited[lokasiAsal] = true;
+    double jarak = 0;
+
+    bool ditemukan = false;
+    while (!q.empty()) {
+        auto [lokasiSekarang, biayaSekarang] = q.front();
+        q.pop();
+
+        if (lokasiSekarang == lokasiTujuan) {
+            jarak = biayaSekarang;
+            ditemukan = true;
+            break;
+        }
+
+        if (graf.find(lokasiSekarang) != graf.end()) {
+            for (const auto &tetangga : graf.at(lokasiSekarang)) {
+                if (!visited[tetangga.first]) {
+                    visited[tetangga.first] = true;
+                    parent[tetangga.first] = lokasiSekarang;
+                    q.push({tetangga.first, biayaSekarang + tetangga.second});
+                }
             }
         }
     }
 
-    double biayaPengiriman = 0;
-    if (jarak < numeric_limits<double>::max()) {
-        double biayaPerKm = 10000; 
-        biayaPengiriman = jarak * biayaPerKm;
-    } else {
+    if (!ditemukan) {
         cout << "\nRute tidak ditemukan! Pastikan lokasi tujuan benar.\n";
         return;
     }
 
+    double biayaPerKm = 3000;
+    double biayaPengiriman = jarak * biayaPerKm;
     double totalPembayaran = totalHarga + biayaPengiriman;
+
     cout << "\nDetail Pembayaran:\n";
     cout << "Total Harga Produk: Rp " << fixed << setprecision(2) << totalHarga << endl;
     cout << "Biaya Pengiriman: Rp " << fixed << setprecision(2) << biayaPengiriman << endl;
     cout << "Total Pembayaran: Rp " << fixed << setprecision(2) << totalPembayaran << endl;
+    cout << "Total Jarak: " << fixed << setprecision(2) << jarak << " km\n";
+
+    cout << "Rute yang Dilalui: ";
+    vector<string> rute;
+    string temp = lokasiTujuan;
+    while (temp != lokasiAsal) {
+        rute.push_back(temp);
+        temp = parent[temp];
+    }
+    rute.push_back(lokasiAsal);
+    reverse(rute.begin(), rute.end());
+
+    for (const string &lokasi : rute) {
+        cout << lokasi;
+        if (lokasi != lokasiTujuan) cout << " -> ";
+    }
+    cout << endl;
 
     char konfirmasi;
     cout << "\nLakukan pembayaran? (Y/T): ";
     cin >> konfirmasi;
 
     if (tolower(konfirmasi) == 'y') {
-        riwayatPembayaran.push_back({idTransaksiGlobal++, keranjang, totalPembayaran});
+        riwayatPembayaran.push_back({idTransaksiGlobal++, keranjang, totalPembayaran, biayaPengiriman});
         keranjang.clear();
         cout << "\nPembayaran berhasil dilakukan! Terima kasih telah berbelanja.\n";
     } else {
@@ -357,15 +407,18 @@ void lihatRiwayatPembayaran() {
 /* Function No. 5 */
 void lihatDetailTransaksi() {
     int idTransaksi;
-    
+
     cout << "Masukkan ID transaksi yang ingin dilihat: ";
     cin >> idTransaksi;
     for (const auto &pembayaran : riwayatPembayaran) {
         if (pembayaran.idTransaksi == idTransaksi) {
             cout << "Detail Transaksi ID " << idTransaksi << ":\n";
             for (const auto &produk : pembayaran.keranjang) {
-                cout << produk.id << ". " << produk.nama << " - " << produk.kategori << " - Rp " << fixed << setprecision(2) << produk.harga << endl;
+                cout << produk.id << ". " << produk.nama << " - " << produk.kategori << " - Rp " 
+                     << fixed << setprecision(2) << produk.harga << endl;
             }
+            cout << "Biaya Pengiriman: Rp " << fixed << setprecision(2) << pembayaran.biayaPengiriman << endl; // Tambahkan biaya pengiriman
+            cout << "Total Pembayaran: Rp " << fixed << setprecision(2) << pembayaran.totalHarga << endl;
             return;
         }
     }
