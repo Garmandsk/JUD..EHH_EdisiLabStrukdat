@@ -66,9 +66,94 @@ void masukkanKeHash() {
 
 // Fungsi untuk menampilkan produk
 void tampilkanProduk() {
-    for (const auto &produk : daftarProduk) {
-        cout << produk.id << ". " << produk.nama << " - " << produk.kategori << " - Rp " << fixed << setprecision(2) << produk.harga << endl;
-    }
+    string pilihan;
+    char pilihanPesanan;
+    int jumlahPesanan;
+
+    do {
+        system("cls"); 
+
+        // Tampilkan daftar produk
+        cout << "Daftar Produk:\n";
+        for (const auto &produk : daftarProduk) {
+            cout << produk.id << ". " << produk.nama << " - " << produk.kategori 
+                 << " - Rp " << fixed << setprecision(2) << produk.harga << endl;
+        }
+
+        cout << "\nTekan 's' Untuk Mengurutkan Produk\n";
+        cout << "Tekan 'c' Untuk Mencari Produk Berdasarkan ID\n";
+        cout << "Tekan 'k' Untuk Keluar\n";
+        cout << "Catatan: Pilih produk berdasarkan ID!\n";
+        
+        cout << "\nMasukkan pilihan: ";
+        cin >> pilihan;
+
+        // Input untuk pengurutan
+        if (pilihan == "s" || pilihan == "S") {
+            urutkanProduk();
+            cin.ignore();
+            cin.get();
+        } 
+        // Input untuk pencarian
+        else if (pilihan == "c" || pilihan == "C") {
+            int idCari;
+            cout << "Masukkan ID produk yang ingin dicari: ";
+            cin >> idCari;
+            cariProduk(idCari);
+            cout << "\nTekan Enter untuk kembali...";
+            cin.ignore();
+            cin.get();
+        } 
+        // Input untuk keluar
+        else if (pilihan == "k" || pilihan == "K") {
+            return;
+        } 
+        // Penanganan untuk pemilihan berdasarkan ID produk
+        else {
+            int idPilihan;
+            try {
+                idPilihan = stoi(pilihan);
+            } catch (const invalid_argument&) {
+                cout << "\nMasukkan tidak valid (harus angka)." << endl;
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+
+            // Cek validitas ID produk
+            auto it = find_if(daftarProduk.begin(), daftarProduk.end(),
+                              [idPilihan](const Produk& p) { return p.id == idPilihan; });
+            if (it == daftarProduk.end()) {
+                cout << "\nProduk dengan ID " << idPilihan << " tidak ditemukan.\n";
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+
+            // Pesan jumlah produk
+            cout << "Jumlah yang ingin dipesan: ";
+            cin >> jumlahPesanan;
+            if (jumlahPesanan <= 0) {
+                cout << "\nJumlah harus lebih dari 0.\n";
+                cin.ignore();
+                cin.get();
+                continue;
+            }
+
+            // Tambahkan produk ke keranjang
+            for (int i = 0; i < jumlahPesanan; ++i) {
+                keranjang.push_back(*it);
+            }
+            
+            cout << jumlahPesanan << " " << it->nama << " telah ditambahkan ke keranjang.\n";
+            cout << "Pesan lagi (Y/T)? ";
+            cin >> pilihanPesanan;
+
+            if (pilihanPesanan == 't' || pilihanPesanan == 'T') {
+                return;
+            }
+        }
+    } while (true);
 }
 
 void showMenu(){
@@ -81,17 +166,12 @@ void showMenu(){
         cout << "====================================\n";
         cout << "   SISTEM PEMESANAN PRODUK ONLINE\n";
         cout << "====================================\n";
-        cout << "1. Urutkan Menu Berdasarkan Kategori/Harga (Sorting)\n";
-        cout << "2. Menambahkan Produk Ke Keranjang Belanja (Array)\n";
-        cout << "3. Mencari Produk Berdasarkan ID (Search dan Hash)\n";
-        cout << "4. Melihat Daftar Barang Di Keranjang (Array)\n";
-        cout << "5. Menghapus Barang Dari Keranjang (Array)\n";
-        cout << "6. Menghitung Biaya Pengiriman Berdasarkan Jarak (Graf - Shortest Path)\n";
-        cout << "7. Melakukan Pembayaran Dan Menyimpan Riwayat Pembayaran (Array)\n";
-        cout << "8. Melihat Riwayat Pembayaran (Array)\n";
-        cout << "9. Melihat Detail Setiap Transaksi Pada Riwayat Pembayaran (Array dan Hash)\n";
-        cout << "10. Keluar\n";
+        cout << "1. Lihat Produk\n";
+        cout << "2. Lihat Keranjang\n";
+        cout << "3. Konfirmasi Pembayaran\n";
+        cout << "4. Lihat Riwayat Pembayaran\n";
+        cout << "5. Lihat Detail Transaksi\n";
+        cout << "6. Keluar\n";
         cout << "====================================\n";
-        cout << "Pilih opsi (1-10): ";
-        
+        cout << "Pilih opsi (1-6): ";
 }

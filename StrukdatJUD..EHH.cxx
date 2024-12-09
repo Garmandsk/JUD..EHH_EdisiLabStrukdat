@@ -11,36 +11,17 @@ int main() {
 
         int opsi;
         cin >> opsi;
-
-        switch (opsi) {
+      
+      switch (opsi) {
             case 1:
                 system("cls");
-                // Sorting produk
-                urutkanProduk();
+               
+                tampilkanProduk();
+          
                 cin.ignore();
                 cin.get();
                 break;
             case 2:
-                system("cls");
-                // Tambah ke keranjang
-                int idTambah;
-                cout << "Masukkan ID produk yang ingin ditambahkan ke keranjang: ";
-                cin >> idTambah;
-                tambahkanKeKeranjang(idTambah);
-                cin.ignore();
-                cin.get();
-                break;
-            case 3:
-                system("cls");
-                // Cari produk
-                int idCari;
-                cout << "Masukkan ID produk yang ingin dicari: ";
-                cin >> idCari;
-                cariProduk(idCari);
-                cin.ignore();
-                cin.get();
-                break;
-            case 4:
                 system("cls");
                 // Lihat keranjang
                 cout << "Produk dalam keranjang:\n";
@@ -48,38 +29,24 @@ int main() {
                 cin.ignore();
                 cin.get();
                 break;
-            case 5:
-                system("cls");
-                // Hapus dari keranjang
-                int idHapus;
-                cout << "Masukkan ID produk yang ingin dihapus dari keranjang: ";
-                cin >> idHapus;
-                hapusDariKeranjang(idHapus);
-                cin.ignore();
-                cin.get();
-                break;
-            case 6:
-                system("cls");
-                // Hitung biaya pengiriman
-                hitungBiayaPengiriman();
-                cin.ignore();
-                cin.get();
-                break;
-            case 7:
+
+            case 3:
                 system("cls");
                 // Lakukan pembayaran
                 lakukanPembayaran();
                 cin.ignore();
                 cin.get();
                 break;
-            case 8:
+
+            case 4:
                 system("cls");
                 // Lihat riwayat pembayaran
                 lihatRiwayatPembayaran();
                 cin.ignore();
                 cin.get();
                 break;
-            case 9:
+
+            case 5:
                 system("cls");
                 // Lihat detail transaksi
                 int idTransaksi;
@@ -89,7 +56,8 @@ int main() {
                 cin.ignore();
                 cin.get();
                 break;
-            case 10:
+          
+            case 6:
                 // Keluar
                 cout << "Terima kasih telah berbelanja di toko kami!\n";
                 return 0;
