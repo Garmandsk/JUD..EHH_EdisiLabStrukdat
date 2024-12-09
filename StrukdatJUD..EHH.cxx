@@ -11,11 +11,11 @@ int main() {
 
         int opsi;
         cin >> opsi;
-
-        switch (opsi) {
+      
+      switch (opsi) {
             case 1:
                 system("cls");
-                tampilkanProduk();
+                tampilkanProduk();     
                 cin.ignore();
                 cin.get();
                 break;
@@ -25,24 +25,28 @@ int main() {
                 cin.ignore();
                 cin.get();
                 break;
+
             case 3:
                 system("cls");
                 lakukanPembayaran();
                 cin.ignore();
                 cin.get();
                 break;
+
             case 4:
                 system("cls");
                 lihatRiwayatPembayaran();
                 cin.ignore();
                 cin.get();
                 break;
+
             case 5:
                 system("cls");
                 lihatDetailTransaksi();
                 cin.ignore();
                 cin.get();
                 break;
+          
             case 6:
                 cout << "Terima kasih telah berbelanja di toko kami!\n";
                 return 0;
