@@ -15,7 +15,7 @@ int main() {
       switch (opsi) {
             case 1:
                 system("cls");
-                tampilkanProduk();     
+                tampilkanProduk();
                 cin.ignore();
                 cin.get();
                 break;
