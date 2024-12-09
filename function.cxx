@@ -174,5 +174,4 @@ void showMenu(){
         cout << "6. Keluar\n";
         cout << "====================================\n";
         cout << "Pilih opsi (1-6): ";
-        
 }
