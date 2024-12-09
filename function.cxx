@@ -70,7 +70,7 @@ void urutkanProduk() {
     cout << "3. Berdasarkan harga (termahal ke termurah)\n";
     cout << "Masukkan pilihan (1-3): ";
     cin >> pilihan;
- 
+
     if (pilihan == 1) {
         sort(daftarProduk.begin(), daftarProduk.end(), [](const Produk &a, const Produk &b) {
             return a.kategori == b.kategori ? a.nama < b.nama : a.kategori < b.kategori;
@@ -407,7 +407,6 @@ void lihatRiwayatPembayaran() {
 /* Function No. 5 */
 void lihatDetailTransaksi() {
     int idTransaksi;
-
     cout << "Masukkan ID transaksi yang ingin dilihat: ";
     cin >> idTransaksi;
     for (const auto &pembayaran : riwayatPembayaran) {
