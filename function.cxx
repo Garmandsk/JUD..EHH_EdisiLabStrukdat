@@ -1,4 +1,4 @@
-#include <iostream>
+6#include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <queue>
@@ -328,6 +328,8 @@ void lakukanPembayaran() {
     double jarak = 0;
 
     bool ditemukan = false;
+
+    /* Bfs */
     while (!q.empty()) {
         auto [lokasiSekarang, biayaSekarang] = q.front();
         q.pop();
